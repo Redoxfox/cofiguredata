@@ -282,4 +282,85 @@ export const  AppRoutingComponent = [
   "defaultProject": "ActivosTI"
 }
 
+##Archivo header .ts
+
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.css']
+})
+export class HeaderComponent implements OnInit {
+
+  constructor(private router:Router) { }
+
+  ngOnInit(): void {
+  }
+
+  VerTipoActivo(){
+    this.router.navigate(['dashboard_tipoActivo']);
+  }
+
+  VerActivos(){
+    this.router.navigate(['dashboard_activos']);
+  }
+
+  VerPerifericos(){
+    this.router.navigate(['dashboard_perifericos']);
+  }
+
+  VerConsumibles(){
+    this.router.navigate(['dashboard_consumibles']);
+  }
+
+  VerUsuarios(){
+    this.router.navigate(['dashboard_usuarios']);
+  }
+
+  Verformato(){
+    this.router.navigate(['formato_entrega']);
+  }
+
+}
+
+##Archivo header .html
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">GESTION ACTIVOS TI</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" (click)="VerTipoActivo()">Tipo Activo</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" (click)="VerActivos()">Activos</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" (click)="VerPerifericos()">Perifericos</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" (click)="VerConsumibles()">Consuimibles</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" (click)="VerUsuarios()">Usuarios</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" (click)="Verformato()">Formato</a>
+      </li>
+    </ul>
+
+  </div>
+</nav>
+
+
+
+
+
+
 
