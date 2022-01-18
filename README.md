@@ -162,6 +162,254 @@ export class HeaderComponent implements OnInit {
   </div>
 </nav>
 
+##Prestamo component
+import { Component, OnInit, Output } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+//import * as EventEmitter from 'events';
+import { entityActivoI } from 'src/app/Modelos/Activos.interface';
+import { ApiService } from 'src/app/Servicios/Api/api.service';
+
+@Component({
+  selector: 'app-dashboard-activos',
+  templateUrl: './dashboard-activos.component.html',
+  styleUrls: ['./dashboard-activos.component.css']
+})
+export class DashboardActivosComponent implements OnInit {
+  itemActivos:entityActivoI[] = [];
+  status:string = '';
+  errorMessage:string = '';
+
+  constructor(private usuarioService:ApiService, private router:Router) {
+
+  }
+
+  ngOnInit(): void {
+    this.usuarioService.getActivos('/api/Activos')
+    .subscribe(data => {
+      this.itemActivos = data;
+    });
+    //this.search.valueChanges.subscribe(value => this.searchEmitter)
+  }
+
+  search = new FormControl('')
+
+ //@Output('search') searchEmitter = new EventEmitter<string>();
+
+  EditarFila(id:number){
+    this.router.navigate(['editar_activos', id]);
+  }
+
+  nuevoElemento(){
+    this.router.navigate(['nuevo_activos']);
+  }
+
+  deleteActivosId(id:number){
+    const url = `/api/Activos/${id}`;
+    this.usuarioService.deleteActivos(url)
+    .subscribe({
+          next: data => {
+            this.status = 'Delete successful';
+            this.ngOnInit();
+          },
+          error: error => {
+            this.errorMessage = error.message;
+            console.error('There was an error!', error);
+         }
+    });
+  }
+
+}
+
+ ## Servicios
+
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { entityCategoriaTipoI, entityTipoActivoGetI, entityTipoActivoGetIdI, entityTipoActivoPostI, entityTipoActivoPutI } from 'src/app/Modelos/TipoActivos.interface';
+import { entityActivoGetIdI, entityActivoI, entityActivoPostI, entityActivoPutI } from 'src/app/Modelos/Activos.interface';
+import { entityConsumibleGetI, entityConsumibleGetIdI, entityConsumiblePostI, entityConsumiblePutI } from 'src/app/Modelos/Consumibles.interface';
+import { entityPerifericoGetI, entityPerifericoGetIdI, entityPerifericoPostI, entityPerifericoPutI } from 'src/app/Modelos/Perifericos.interface';
+import { entityActivoAsigGetI, entityUsuarioGetI, entityUsuarioGetIdI, entityUsuarioPostI, entityUsuarioPutI, entityActivoAsigPdfGetI } from 'src/app/Modelos/Usuarios.interface';
+
+import {entityFormatoI } from 'src/app/Modelos/DataFormato.interface';
+import { map } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { OptionTipoActivoI } from 'src/app/Modelos/ObjVarios.interface';
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ApiService {
+
+  constructor(private HttpClient: HttpClient) {
+
+  }
+
+  //Metodos api tipo activos
+  /*cargarUsuarios (url:string ) {
+
+    return this.HttpClient.get<tipoActivoI[]>(url);
+  }*/
+
+  getTipoActivos(url:string){
+    return this.HttpClient.get<entityTipoActivoGetI[]>(url);
+  }
+
+  getTipoActivosId(url:string){
+    return this.HttpClient.get<entityTipoActivoGetIdI>(url);
+  }
+
+  postTipoActivos(url:string, entiyTipoActivo:entityTipoActivoPostI){
+    return this.HttpClient.post(url,entiyTipoActivo);
+  }
+
+  putTipoActivos(url:string, entiyTipoActivo:entityTipoActivoPutI){
+    return this.HttpClient.put(url,entiyTipoActivo);
+  }
+
+  deleteTipoActivos(url:string){
+    return this.HttpClient.delete(url);
+  }
+
+  getCategoriaTipo(url:string){
+    return this.HttpClient.get<entityCategoriaTipoI[]>(url);
+  }
+
+  getByTipoActivo(url:string){
+    return this.HttpClient.get<OptionTipoActivoI[]>(url);
+  }
+
+
+  //Metodos api activos
+
+ getActivos(url:string){
+    return this.HttpClient.get<entityActivoI[]>(url);
+  }
+
+  getActivosId(url:string){
+    return this.HttpClient.get<entityActivoGetIdI>(url);
+  }
+
+  postActivos(url:string, entiyActivo:entityActivoPostI){
+    return this.HttpClient.post(url,entiyActivo);
+  }
+
+  getByActivo(url:string){
+    return this.HttpClient.get<entityActivoI[]>(url);
+  }
+
+  putActivos(url:string, entiyTipoActivo:entityActivoPutI){
+    return this.HttpClient.put(url,entiyTipoActivo);
+  }
+
+  deleteActivos(url:string){
+    return this.HttpClient.delete(url);
+  }
+
+
+  //Metodos api consumibles
+
+  getConsumibles(url:string){
+    return this.HttpClient.get<entityConsumibleGetI[]>(url);
+  }
+
+  getConsumiblesId(url:string){
+    return this.HttpClient.get<entityConsumibleGetIdI>(url);
+  }
+
+  getByTipoConsumibles(url:string){
+    return this.HttpClient.get<entityConsumibleGetI[]>(url);
+  }
+
+  postConsumibles(url:string, entiyActivo:entityConsumiblePostI){
+    return this.HttpClient.post(url,entiyActivo);
+  }
+
+  putConsumibles(url:string, entiyTipoActivo: entityConsumiblePutI){
+    return this.HttpClient.put(url,entiyTipoActivo);
+  }
+
+  deleteConsumibles(url:string){
+    return this.HttpClient.delete(url);
+  }
+
+
+  //Metodos api perifericos
+
+  getPerifericos(url:string){
+    return this.HttpClient.get<entityPerifericoGetI[]>(url);
+  }
+
+  getPerifericosId(url:string){
+    return this.HttpClient.get<entityPerifericoGetIdI>(url);
+  }
+
+  getByTipoPerifericos(url:string){
+    return this.HttpClient.get<entityPerifericoGetI[]>(url);
+  }
+
+  postPerifericos(url:string, entiyActivo:entityPerifericoPostI){
+    return this.HttpClient.post(url,entiyActivo);
+  }
+
+  putPerifericos(url:string, entiyTipoActivo: entityPerifericoPutI){
+    return this.HttpClient.put(url,entiyTipoActivo);
+  }
+
+  deletePerifericos(url:string){
+    return this.HttpClient.delete(url);
+  }
+
+  //Metodos api usuarios
+  getUsuarios(url:string){
+    return this.HttpClient.get<entityUsuarioGetI[]>(url);
+  }
+
+  getUsuariosId(url:string){
+    return this.HttpClient.get<entityUsuarioGetIdI>(url);
+  }
+
+  postUsuarios(url:string, entiyActivo:entityUsuarioPostI){
+    return this.HttpClient.post(url,entiyActivo);
+  }
+
+  putUsuarios(url:string, entiyTipoActivo: entityUsuarioPutI){
+    return this.HttpClient.put(url,entiyTipoActivo);
+  }
+
+  deleteUsuarios(url:string){
+    return this.HttpClient.delete(url);
+  }
+
+  getByActivoAsig(url:string){
+    return this.HttpClient.get<entityActivoAsigGetI[]>(url);
+  }
+
+  getRemoveActivoAsig(url:string){
+    return this.HttpClient.get<entityActivoAsigGetI[]>(url);
+  }
+
+  getOnInitActivoAsig(url:string){
+    return this.HttpClient.get<entityActivoAsigGetI[]>(url);
+  }
+
+  getOnInitPerifericoAsig(url:string){
+    return this.HttpClient.get<entityActivoAsigGetI[]>(url);
+  }
+
+  getOnInitConsumibleAsig(url:string){
+    return this.HttpClient.get<entityActivoAsigGetI[]>(url);
+  }
+
+  getDataActivosAsig(url:string){
+    return this.HttpClient.get<entityFormatoI[]>(url);
+  }
+
+  getAsigForPDF(url:string){
+    return this.HttpClient.get<entityActivoAsigPdfGetI[]>(url);
+  }
+}
 
 
 
