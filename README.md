@@ -410,6 +410,164 @@ export class ApiService {
     return this.HttpClient.get<entityActivoAsigPdfGetI[]>(url);
   }
 }
+  
+  
+##Model interface
+
+export interface entityActivoI{
+  id: number,
+  nombre: string,
+  modelo: string,
+  serial: string,
+  nroActivo: number,
+  procesador: string,
+  disco: string,
+  color: string,
+  nombreEquipo:string,
+  asignado: string,
+  estado: string,
+  idTipo: number,
+  idTipoNavigation: number,
+  usuarioActivos: []
+}
+  
+##component
+
+import { Component, OnInit, Output } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+//import * as EventEmitter from 'events';
+import { entityActivoI } from 'src/app/Modelos/Activos.interface';
+import { ApiService } from 'src/app/Servicios/Api/api.service';
+
+@Component({
+  selector: 'app-dashboard-activos',
+  templateUrl: './dashboard-activos.component.html',
+  styleUrls: ['./dashboard-activos.component.css']
+})
+export class DashboardActivosComponent implements OnInit {
+  itemActivos:entityActivoI[] = [];
+  status:string = '';
+  errorMessage:string = '';
+
+  constructor(private usuarioService:ApiService, private router:Router) {
+
+  }
+
+  ngOnInit(): void {
+    this.usuarioService.getActivos('/api/Activos')
+    .subscribe(data => {
+      this.itemActivos = data;
+    });
+    //this.search.valueChanges.subscribe(value => this.searchEmitter)
+  }
+
+  search = new FormControl('')
+
+ //@Output('search') searchEmitter = new EventEmitter<string>();
+
+  EditarFila(id:number){
+    this.router.navigate(['editar_activos', id]);
+  }
+
+  nuevoElemento(){
+    this.router.navigate(['nuevo_activos']);
+  }
+
+  deleteActivosId(id:number){
+    const url = `/api/Activos/${id}`;
+    this.usuarioService.deleteActivos(url)
+    .subscribe({
+          next: data => {
+            this.status = 'Delete successful';
+            this.ngOnInit();
+          },
+          error: error => {
+            this.errorMessage = error.message;
+            console.error('There was an error!', error);
+         }
+    });
+  }
+
+}
+  
+ ##html component
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activos TI</title>
+
+
+</head>
+    <app-header></app-header>
+    <body>
+    <div class="col mt-4 p-3 border">
+      <div class="row ">
+        <div class="col">
+          <button type="button" class="btn btn-primary"  (click)="nuevoElemento()">Nuevo Registro</button>
+        </div>
+        <div class="col">
+          <input type="text" class="form-control"  placeholder="Nombre">
+        </div>
+        <div class="col">
+          <i class="fas fa-search" style="margin-right: 15px;" ></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mt-4" >
+      <div class="card">
+          <div class="card-body">
+            <span class="h3">Lista Activos</span>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Modelo</th>
+                  <th scope="col">Serial</th>
+                  <th scope="col">Nro Activo</th>
+                  <th scope="col">Color</th>
+                  <th scope="col">Nombre Equipo</th>
+                  <th scope="col">Asinado</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col">Id Tipo</th>
+                  <th scope="col">Editar</th>
+                  <th scope="col">Eliminar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of itemActivos; let indice=index" >
+                  <td>{{indice + 1}}</td>
+                  <td>{{item.nombre}}</td>
+                  <td>{{item.modelo}}</td>
+                  <td>{{item.serial}}</td>
+                  <td>{{item.nroActivo}}</td>
+                  <td>{{item.color}}</td>
+                  <td>{{item.nombreEquipo}}</td>
+                  <td>{{item.asignado}}</td>
+                  <td>{{item.estado}}</td>
+                  <td scope="row">{{item.idTipo}}</td>
+                  <td>
+                    <i class="fas fa-edit text-info " style="margin-right: 7px;" (click)="EditarFila(item.id)"></i>
+                  </td>
+                  <td>
+                    <i class="fas fa-trash-alt text-danger " (click)="deleteActivosId(item.id)"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+      </div>
+    </div>
+</body>
+</html>
+
+
+
 
 
 
