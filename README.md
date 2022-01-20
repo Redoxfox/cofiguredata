@@ -565,6 +565,89 @@ export class DashboardActivosComponent implements OnInit {
     </div>
 </body>
 </html>
+  
+  ##cors
+  
+  {
+  "/api/TipoActivo":{
+      "target":"https://localhost:44389",
+      "secure":false,
+      "logLevel":"debug",
+      "changeOrigin":true
+  },
+
+  "/api/TipoActivo/CategoriaTipo":{
+    "target":"https://localhost:44389",
+    "secure":false,
+    "logLevel":"debug",
+    "changeOrigin":true
+  },
+
+  "/api/TipoActivo/*":{
+    "target":"https://localhost:44389",
+    "secure":false,
+    "logLevel":"debug",
+    "changeOrigin":true
+  },
+
+  "/api/Activos/":{
+    "target":"https://localhost:44389",
+    "secure":false,
+    "logLevel":"debug",
+    "changeOrigin":true
+  },
+
+  "/api/Activos/*":{
+    "target":"https://localhost:44389",
+    "secure":false,
+    "logLevel":"debug",
+    "changeOrigin":true
+  },
+
+  "/api/Consumibles":{
+    "target":"https://localhost:44389",
+    "secure":false,
+    "logLevel":"debug",
+    "changeOrigin":true
+  },
+
+  "/api/Consumibles/*":{
+    "target":"https://localhost:44389",
+    "secure":false,
+    "logLevel":"debug",
+    "changeOrigin":true
+  },
+
+  "/api/Perifericos":{
+    "target":"https://localhost:44389",
+    "secure":false,
+    "logLevel":"debug",
+    "changeOrigin":true
+  },
+
+  "/api/Perifericos/*":{
+    "target":"https://localhost:44389",
+    "secure":false,
+    "logLevel":"debug",
+    "changeOrigin":true
+  },
+
+  "/api/Usuarios/*":{
+    "target":"https://localhost:44389",
+    "secure":false,
+    "logLevel":"debug",
+    "changeOrigin":true
+  },
+
+  "/api/Usuarios":{
+    "target":"https://localhost:44389",
+    "secure":false,
+    "logLevel":"debug",
+    "changeOrigin":true
+  }
+
+}
+
 
 
 
