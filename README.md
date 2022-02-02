@@ -946,6 +946,81 @@ export class NuevoActivosComponent implements OnInit {
   </div>
 </div>
 
+#component new
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { entityActivoI, entityActivoPostI } from 'src/app/Modelos/Activos.interface';
+import { entityTipoActivoGetI } from 'src/app/Modelos/TipoActivos.interface';
+import { ApiService } from 'src/app/Servicios/Api/api.service';
+import { environment } from 'src/environments/environment';
+
+@Component({
+  selector: 'app-nuevo-activos',
+  templateUrl: './nuevo-activos.component.html',
+  styleUrls: ['./nuevo-activos.component.css']
+})
+export class NuevoActivosComponent implements OnInit {
+  createNewActivo: FormGroup;
+  itemActivos=<entityActivoPostI>{};
+  itemTipoActivosAll:entityTipoActivoGetI[] = [];
+  itemTipoActivos:entityActivoI[] = [];
+  TipoActivoController:string= '';
+  ActivosController:string= '';
+  constructor(private formB:FormBuilder,
+    private usuarioService:ApiService,
+    private router:Router,
+    private arouter:ActivatedRoute) {
+      this.createNewActivo = this.formB.group({
+        nombre:['',Validators.required],
+        modelo: ['',Validators.required],
+        serial: ['',Validators.required],
+        nroActivo: ['',Validators.required],
+        procesador:['',Validators.required],
+        disco: ['',Validators.required],
+        color: ['',Validators.required],
+        nombreEquipo:['',Validators.required],
+        asignado: ['',Validators.required],
+        estado: ['',Validators.required],
+        idTipo: ['',Validators.required]
+      })
+     }
+
+  ngOnInit(): void {
+    this.TipoActivoController = "api/TipoActivo/";
+    this.usuarioService.getTipoActivos(`${environment.apiUrl}${this.TipoActivoController}`)
+    .subscribe(data => {
+      this.itemTipoActivosAll = data;
+    });
+  }
+
+  agregarActivo(){
+
+    this.itemActivos= {
+      nombre:this.createNewActivo.value.nombre,
+      modelo: this.createNewActivo.value.modelo,
+      serial: this.createNewActivo.value.serial,
+      nroActivo:this.createNewActivo.value.nroActivo,
+      procesador: this.createNewActivo.value.procesador,
+      disco: this.createNewActivo.value.disco,
+      color: this.createNewActivo.value.color,
+      nombreEquipo:this.createNewActivo.value.nombreEquipo,
+      asignado: "DISPONIBLE",
+      estado: "BUENO",
+      idTipo: this.createNewActivo.value.idTipo
+    }
+    this.ActivosController = "api/Activos";
+    const url = `${environment.apiUrl}${this.ActivosController}`;
+    this.usuarioService.postActivos(url, this.itemActivos)
+    .subscribe(data => {
+      console.log(this.itemActivos);
+      this.router.navigate(['dashboard_activos']);
+    });
+
+  }
+
+
+}
 
 
 
