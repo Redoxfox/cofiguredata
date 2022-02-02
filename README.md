@@ -1,5 +1,8 @@
 # cofiguredata
 
+mysqlclient
+https://www.c-sharpcorner.com/UploadFile/9582c9/insert-update-delete-display-data-in-mysql-using-C-Sharp/
+
 #environment
 
 export const environment = {
