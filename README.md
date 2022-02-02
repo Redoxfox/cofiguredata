@@ -1,5 +1,15 @@
 # cofiguredata
 
+#environment
+
+export const environment = {
+  production: false,
+   //apiUrl: "http://172.25.85.31:8081/"
+   apiUrl: "http://localhost:22224/",
+   //apiUrl: "https://localhost:44384/",
+   //apiUrlIOTec: "http://172.25.80.55:8011/"
+};
+
 #archivo app.module.ts
 
 import { NgModule } from '@angular/core';
@@ -647,6 +657,291 @@ export class DashboardActivosComponent implements OnInit {
   }
 
 }
+  
+#Component edit
+  
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { entityActivoPutI } from 'src/app/Modelos/Activos.interface';
+import { ApiService } from 'src/app/Servicios/Api/api.service';
+import { environment } from 'src/environments/environment';
+
+@Component({
+  selector: 'app-editar-activos',
+  templateUrl: './editar-activos.component.html',
+  styleUrls: ['./editar-activos.component.css']
+})
+export class EditarActivosComponent implements OnInit {
+  updateActivo: FormGroup;
+  submitted = false;
+  itemActivos=<entityActivoPutI>{};
+  id:number = 0 ;
+  idTipo:number = 0;
+  ActivosController:string= '';
+  constructor(private formB:FormBuilder,
+    private usuarioService:ApiService,
+    private router:Router,
+    private arouter:ActivatedRoute,
+    public dataService:ApiService) {
+    this.updateActivo = this.formB.group({
+      id:['',Validators.required],
+      nombre:['',Validators.required],
+      modelo: ['',Validators.required],
+      serial: ['',Validators.required],
+      nroActivo: ['',Validators.required],
+      procesador:['',Validators.required],
+      disco: ['',Validators.required],
+      color: ['',Validators.required],
+      nombreEquipo:['',Validators.required],
+      asignado: ['',Validators.required],
+      estado: ['',Validators.required]
+    })
+  }
+
+  ngOnInit(): void {
+    this.id=Number(this.arouter.snapshot.params.id);
+    this.ActivosController = "api/Activos";
+    const url = `${environment.apiUrl}${this.ActivosController}` + `/${this.id}`;
+    this.usuarioService.getActivosId(url)
+    .subscribe(data => {
+      this.updateActivo.controls["nombre"].setValue(data.nombre);
+      this.updateActivo.controls["modelo"].setValue(data.modelo);
+      this.updateActivo.controls["serial"].setValue(data.serial);
+      this.updateActivo.controls["nroActivo"].setValue(data.nroActivo);
+      this.updateActivo.controls["procesador"].setValue(data.procesador);
+      this.updateActivo.controls["disco"].setValue(data.disco);
+      this.updateActivo.controls["color"].setValue(data.color);
+      this.updateActivo.controls["nombreEquipo"].setValue(data.nombreEquipo);
+      this.updateActivo.controls["asignado"].setValue(data.asignado);
+      this.updateActivo.controls["estado"].setValue(data.estado);
+      this.idTipo = data.idTipo;
+    });
+  }
+
+  updataActivo(){
+
+    this.itemActivos= {
+      id:this.id,
+      nombre: this.updateActivo.value.nombre,
+      modelo: this.updateActivo.value.modelo,
+      serial: this.updateActivo.value.serial,
+      nroActivo: this.updateActivo.value.nroActivo,
+      procesador: this.updateActivo.value.procesador,
+      disco: this.updateActivo.value.disco,
+      color: this.updateActivo.value.color,
+      nombreEquipo: this.updateActivo.value.nombreEquipo,
+      asignado:this.updateActivo.value.asignado,
+      estado:this.updateActivo.value.estado,
+      idTipo:this.idTipo
+    }
+    ;
+    const url = `${environment.apiUrl}${this.ActivosController}` +`/${this.id}`;
+    this.usuarioService.putActivos(url, this.itemActivos)
+    .subscribe(data => {
+      console.log(data);
+      this.router.navigate(['dashboard_activos']);
+    });
+
+  }
+
+}
+
+#component new
+  
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { entityActivoI, entityActivoPostI } from 'src/app/Modelos/Activos.interface';
+import { entityTipoActivoGetI } from 'src/app/Modelos/TipoActivos.interface';
+import { ApiService } from 'src/app/Servicios/Api/api.service';
+import { environment } from 'src/environments/environment';
+
+@Component({
+  selector: 'app-nuevo-activos',
+  templateUrl: './nuevo-activos.component.html',
+  styleUrls: ['./nuevo-activos.component.css']
+})
+export class NuevoActivosComponent implements OnInit {
+  createNewActivo: FormGroup;
+  itemActivos=<entityActivoPostI>{};
+  itemTipoActivosAll:entityTipoActivoGetI[] = [];
+  itemTipoActivos:entityActivoI[] = [];
+  TipoActivoController:string= '';
+  ActivosController:string= '';
+  constructor(private formB:FormBuilder,
+    private usuarioService:ApiService,
+    private router:Router,
+    private arouter:ActivatedRoute) {
+      this.createNewActivo = this.formB.group({
+        nombre:['',Validators.required],
+        modelo: ['',Validators.required],
+        serial: ['',Validators.required],
+        nroActivo: ['',Validators.required],
+        procesador:['',Validators.required],
+        disco: ['',Validators.required],
+        color: ['',Validators.required],
+        nombreEquipo:['',Validators.required],
+        asignado: ['',Validators.required],
+        estado: ['',Validators.required],
+        idTipo: ['',Validators.required]
+      })
+     }
+
+  ngOnInit(): void {
+    this.TipoActivoController = "api/TipoActivo/";
+    this.usuarioService.getTipoActivos(`${environment.apiUrl}${this.TipoActivoController}`)
+    .subscribe(data => {
+      this.itemTipoActivosAll = data;
+    });
+  }
+
+  agregarActivo(){
+
+    this.itemActivos= {
+      nombre:this.createNewActivo.value.nombre,
+      modelo: this.createNewActivo.value.modelo,
+      serial: this.createNewActivo.value.serial,
+      nroActivo:this.createNewActivo.value.nroActivo,
+      procesador: this.createNewActivo.value.procesador,
+      disco: this.createNewActivo.value.disco,
+      color: this.createNewActivo.value.color,
+      nombreEquipo:this.createNewActivo.value.nombreEquipo,
+      asignado: "DISPONIBLE",
+      estado: "BUENO",
+      idTipo: this.createNewActivo.value.idTipo
+    }
+    this.ActivosController = "api/Activos";
+    const url = `${environment.apiUrl}${this.ActivosController}`;
+    this.usuarioService.postActivos(url, this.itemActivos)
+    .subscribe(data => {
+      console.log(this.itemActivos);
+      this.router.navigate(['dashboard_activos']);
+    });
+
+  }
+
+
+}
+
+ #Html Edit component
+ 
+ <app-header></app-header>
+<div class="container pt-4">
+  <div class="row">
+      <div class="col-lg-6 offset-lg-3">
+          <div class="card">
+              <div class="card-body">
+                <span class="h3">Nuevo Tipo Activo</span>
+                  <form class="mt-4" [formGroup]="updateActivo" (ngSubmit)="updataActivo()">
+                    <div class="row">
+                      <div class="col">
+                          <input type="text" class="form-control" formControlName="nombre" placeholder="Nombre">
+                      </div>
+                      <div class="col">
+                          <input type="text" class="form-control" formControlName="modelo" placeholder="Modelo">
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col">
+                            <input type="text" class="form-control" formControlName="serial" placeholder="Serial">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control" formControlName="nroActivo" placeholder="Numero Activo">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col">
+                            <input type="text" class="form-control" formControlName="procesador" placeholder="Procesador">
+                        </div>
+                        <div class="col ">
+                            <input type="text" class="form-control" formControlName="disco" placeholder="Disco">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col">
+                            <input type="text" class="form-control" formControlName="color" placeholder="Color">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control" formControlName="nombreEquipo" placeholder="Nombre de Red">
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                      <div class="col">
+                          <input type="text" class="form-control" formControlName="asignado" placeholder="ASIGNADO">
+                      </div>
+                    </div>
+                    <div class="mt-3">
+                        <button type="text" class="btn btn-primary" style="margin-right: 7px;">Volver</button>
+                        <button type="submit" class="btn btn-primary">Actulizar</button>
+                    </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+#Html component new
+
+<app-header></app-header>
+<div class="container pt-4">
+  <div class="row">
+      <div class="col-lg-6 offset-lg-3">
+          <div class="card">
+              <div class="card-body">
+                  <h5>Agregra Nuevo Activo</h5>
+                  <form class="mt-4" [formGroup]="createNewActivo" (ngSubmit)="agregarActivo()">
+                      <div class="row">
+                          <div class="col">
+                              <input type="text" class="form-control" formControlName="nombre" placeholder="Nombre">
+                          </div>
+                          <div class="col">
+                              <input type="text" class="form-control" formControlName="modelo" placeholder="Modelo">
+                          </div>
+                      </div>
+                      <div class="row mt-2">
+                          <div class="col">
+                              <input type="text" class="form-control" formControlName="serial" placeholder="Serial">
+                          </div>
+                          <div class="col">
+                              <input type="text" class="form-control" formControlName="nroActivo" placeholder="Numero Activo">
+                          </div>
+                      </div>
+                      <div class="row mt-2">
+                          <div class="col">
+                              <input type="text" class="form-control" formControlName="procesador" placeholder="Procesador">
+                          </div>
+                          <div class="col ">
+                              <input type="text" class="form-control" formControlName="disco" placeholder="Disco">
+                          </div>
+                      </div>
+                      <div class="row mt-2">
+                          <div class="col">
+                              <input type="text" class="form-control" formControlName="color" placeholder="Color">
+                          </div>
+                          <div class="col">
+                              <input type="text" class="form-control" formControlName="nombreEquipo" placeholder="Nombre de Red">
+                          </div>
+                      </div>
+                      <div class="row m-3">
+                         <select formControlName="idTipo" >
+                              <option *ngFor = "let item of itemTipoActivosAll" value={{item.id}}>
+                                 {{item.nombre}}
+                              </option>
+                         </select>
+                      </div>
+                      <div class="mt-3">
+                          <button type="text" class="btn btn-primary" style="margin-right: 7px;">Volver</button>
+                          <button type="submit" class="btn btn-primary">Agregar</button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
 
 
 
