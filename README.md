@@ -1153,6 +1153,65 @@ export class EditarActivosComponent implements OnInit {
 
             return NoContent();
         }
+
+#Edit HTMl  
+<app-header></app-header>
+<div class="container pt-4">
+  <div class="row">
+      <div class="col-lg-6 offset-lg-3">
+          <div class="card">
+              <div class="card-body">
+                <span class="h3">Nuevo Tipo Activo</span>
+                  <form class="mt-4" [formGroup]="updateActivo" (ngSubmit)="updataActivo()">
+                    <div class="row">
+                      <div class="col">
+                          <input type="text" class="form-control" formControlName="nombre" placeholder="Nombre">
+                      </div>
+                      <div class="col">
+                          <input type="text" class="form-control" formControlName="modelo" placeholder="Modelo">
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col">
+                            <input type="text" class="form-control" formControlName="serial" placeholder="Serial">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control" formControlName="nroActivo" placeholder="Numero Activo">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col">
+                            <input type="text" class="form-control" formControlName="procesador" placeholder="Procesador">
+                        </div>
+                        <div class="col ">
+                            <input type="text" class="form-control" formControlName="disco" placeholder="Disco">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col">
+                            <input type="text" class="form-control" formControlName="color" placeholder="Color">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control" formControlName="nombreEquipo" placeholder="Nombre de Red">
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                      <div class="col">
+                          <input type="text" class="form-control" formControlName="asignado" placeholder="ASIGNADO">
+                      </div>
+                    </div>
+                    <div class="mt-3">
+                        <button type="text" class="btn btn-primary" style="margin-right: 7px;">Volver</button>
+                        <button type="submit" class="btn btn-primary">Actulizar</button>
+                    </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
   
 
 
