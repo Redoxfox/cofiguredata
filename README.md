@@ -7,10 +7,10 @@ https://www.c-sharpcorner.com/UploadFile/9582c9/insert-update-delete-display-dat
 
 export const environment = {
   production: false,
-   //apiUrl: "http://172.25.85.31:8081/"
+   //apiUrl: "http://***.**.**.**:****/"
    apiUrl: "http://localhost:22224/",
    //apiUrl: "https://localhost:44384/",
-   //apiUrlIOTec: "http://172.25.80.55:8011/"
+   //apiUrlIOTec: "http://***.**.**.**:****/"
 };
 
 #archivo app.module.ts
